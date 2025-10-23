@@ -1,0 +1,561 @@
+{
+	"info": {
+		"_postman_id": "legal-ia-2025",
+		"name": "LEGAL-IA API",
+		"description": "Colección completa de endpoints para LEGAL-IA - Sistema de análisis legal con IA para estudiantes y abogados junior",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health"]
+				}
+			}
+		},
+		{
+			"name": "Cases",
+			"item": [
+				{
+					"name": "List Cases",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases"],
+							"query": [
+								{
+									"key": "status",
+									"value": "draft",
+									"disabled": true
+								},
+								{
+									"key": "case_type",
+									"value": "civil",
+									"disabled": true
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Case",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"case_uuid\", jsonData.data.uuid);",
+									"    console.log(\"Case UUID guardado: \" + jsonData.data.uuid);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Accidente de tránsito en intersección\",\n    \"description\": \"Colisión entre dos vehículos con testimonios contradictorios y evidencia de cámara de seguridad\",\n    \"case_type\": \"civil\",\n    \"parties\": {\n        \"plaintiff\": \"Juan Pérez Rodríguez\",\n        \"defendant\": \"María García López\"\n    },\n    \"incident_date\": \"2025-10-15\",\n    \"facts\": \"El día 15 de octubre de 2025, aproximadamente a las 14:30 hrs, se produjo una colisión en la intersección de Av. Principal con Calle 5. El demandante alega que el semáforo estaba en verde cuando cruzó la intersección, mientras que la demandada sostiene que ella tenía el paso. Existe grabación de cámara de seguridad del momento del accidente.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cases",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases"]
+						}
+					}
+				},
+				{
+					"name": "Get Case",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Case",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"analyzed\",\n    \"facts\": \"Información actualizada del caso...\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Case",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Case Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "stats"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Analysis",
+			"item": [
+				{
+					"name": "Start Analysis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 202) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"analysis_uuid\", jsonData.data.analysis.uuid);",
+									"    console.log(\"Analysis UUID guardado: \" + jsonData.data.analysis.uuid);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/analyze",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "analyze"]
+						}
+					}
+				},
+				{
+					"name": "Get Case Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/analysis",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "analysis"]
+						}
+					}
+				},
+				{
+					"name": "Get Latest Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/analysis/latest",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "analysis", "latest"]
+						}
+					}
+				},
+				{
+					"name": "Get Specific Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analysis/{{analysis_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analysis", "{{analysis_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Re-analyze Case",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/re-analyze",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "re-analyze"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Analysis",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analysis/{{analysis_uuid}}/cancel",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analysis", "{{analysis_uuid}}", "cancel"]
+						}
+					}
+				},
+				{
+					"name": "Analysis Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analysis/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analysis", "stats"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Evidence",
+			"item": [
+				{
+					"name": "List Evidence",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/evidence",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "evidence"]
+						}
+					}
+				},
+				{
+					"name": "Upload Evidence (File)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"evidence_uuid\", jsonData.data.uuid);",
+									"    console.log(\"Evidence UUID guardado: \" + jsonData.data.uuid);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Video de cámara de seguridad",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Grabación del momento del accidente desde cámara de tráfico",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "video",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/evidence",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "evidence"]
+						}
+					}
+				},
+				{
+					"name": "Upload Evidence (URL)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Video de cámara de seguridad\",\n    \"description\": \"Grabación del momento del accidente\",\n    \"type\": \"video\",\n    \"file_url\": \"https://example.com/video.mp4\",\n    \"mime_type\": \"video/mp4\",\n    \"file_size\": 15728640\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/cases/{{case_uuid}}/evidence",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cases", "{{case_uuid}}", "evidence"]
+						}
+					}
+				},
+				{
+					"name": "Get Evidence",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/evidence/{{evidence_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "evidence", "{{evidence_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Analyze Visual Evidence",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/evidence/{{evidence_uuid}}/analyze",
+							"host": ["{{base_url}}"],
+							"path": ["api", "evidence", "{{evidence_uuid}}", "analyze"]
+						}
+					}
+				},
+				{
+					"name": "Get Evidence Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/evidence/{{evidence_uuid}}/analysis",
+							"host": ["{{base_url}}"],
+							"path": ["api", "evidence", "{{evidence_uuid}}", "analysis"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Jurisprudence",
+			"item": [
+				{
+					"name": "List Jurisprudence",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence?per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence"],
+							"query": [
+								{
+									"key": "court",
+									"value": "Suprema",
+									"disabled": true
+								},
+								{
+									"key": "relevance_level",
+									"value": "high",
+									"disabled": true
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Jurisprudence",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"jurisprudence_uuid\", jsonData.data.uuid);",
+									"    console.log(\"Jurisprudence UUID guardado: \" + jsonData.data.uuid);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"case_number\": \"STC-2024-12345\",\n    \"court\": \"Corte Suprema\",\n    \"jurisdiction\": \"Nacional\",\n    \"decision_date\": \"2024-08-15\",\n    \"case_title\": \"Responsabilidad civil en accidente de tránsito con semáforo\",\n    \"summary\": \"La Corte Suprema establece criterios sobre responsabilidad en accidentes de tránsito cuando existe discrepancia sobre el estado del semáforo.\",\n    \"ruling\": \"Se confirma la sentencia de instancia que determina responsabilidad compartida basándose en evidencia de cámara de seguridad.\",\n    \"legal_reasoning\": \"Considerando que la evidencia videográfica prevalece sobre el testimonio contradictorio de las partes, y aplicando el principio de la sana crítica...\",\n    \"keywords\": [\"accidente_transito\", \"responsabilidad_civil\", \"semaforo\", \"evidencia_visual\", \"daños_perjuicios\"],\n    \"articles_cited\": [\"Art. 1902 CC\", \"Art. 1903 CC\", \"Art. 117 CP\"],\n    \"relevance_level\": \"high\",\n    \"url\": \"https://ejemplo.com/sentencia/12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence"]
+						}
+					}
+				},
+				{
+					"name": "Get Jurisprudence",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence/{{jurisprudence_uuid}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence", "{{jurisprudence_uuid}}"]
+						}
+					}
+				},
+				{
+					"name": "Search Jurisprudence (Full-Text)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"responsabilidad civil accidente semáforo\",\n    \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence/search",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence", "search"]
+						}
+					}
+				},
+				{
+					"name": "Semantic Search (Embeddings)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"casos de colisión vehicular con testimonios contradictorios y evidencia de video\",\n    \"limit\": 10,\n    \"min_similarity\": 0.75\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence/semantic-search",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence", "semantic-search"]
+						}
+					}
+				},
+				{
+					"name": "Find Similar Precedents",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"case_description\": \"Accidente de tránsito en intersección con semáforo. El demandante alega que tenía luz verde, mientras que la demandada sostiene lo contrario. Existe grabación de cámara de seguridad que muestra el momento del impacto.\",\n    \"case_type\": \"civil\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence/find-similar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence", "find-similar"]
+						}
+					}
+				},
+				{
+					"name": "Jurisprudence Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jurisprudence/stats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "jurisprudence", "stats"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "case_uuid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "analysis_uuid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "evidence_uuid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "jurisprudence_uuid",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
