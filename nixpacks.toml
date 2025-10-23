@@ -1,8 +1,11 @@
 [phases.setup]
-nixPkgs = ['php82']
+nixPkgs = ['php82', 'php82Packages.composer']
 
 [phases.install]
 cmds = ['composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist']
 
+[phases.build]
+cmds = ['echo "Skipping npm build - not needed for Laravel API"']
+
 [start]
-cmd = 'php -S 0.0.0.0:$PORT -t public'
+cmd = 'php artisan migrate --force && php -S 0.0.0.0:$PORT -t public'
