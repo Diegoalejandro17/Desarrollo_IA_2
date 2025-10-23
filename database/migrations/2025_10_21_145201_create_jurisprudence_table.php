@@ -42,7 +42,7 @@ return new class extends Migration
             $table->index('court');
             $table->index('decision_date');
             $table->index('relevance_level');
-            $table->fullText(['case_title', 'summary', 'legal_reasoning']); // Full-text search
+            // $table->fullText(['case_title', 'summary', 'legal_reasoning']); // Full-text search - Comentado temporalmente
         });
 
         // Nota: Para usar pgvector en Supabase, necesitarás ejecutar este SQL manualmente:
